@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DiscordProjectSettings">
+    <option name="show" value="ASK" />
+    <option name="description" value="" />
+    <option name="applicationTheme" value="default" />
+    <option name="iconsTheme" value="default" />
+    <option name="button1Title" value="" />
+    <option name="button1Url" value="" />
+    <option name="button2Title" value="" />
+    <option name="button2Url" value="" />
+    <option name="customApplicationId" value="" />
+  </component>
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="GithubDefaultAccount">
+    <option name="defaultAccountId" value="51159a82-1743-4d01-b5c2-7f4c25b0905c" />
+  </component>
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/pom.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_21" default="true" project-jdk-name="21" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+</project>
