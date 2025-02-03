@@ -8,8 +8,16 @@ public class Main {
     private static Menu menu = new Menu(Lang.EN);
     private static Eys eys = new Eys(Lang.EN);
     public static void main(String[] args) {
-        menu.show("CARS MENU", new String[]{"ADD",""},"Exit");
-
+        boolean exit = false;
+        do {
+            int selection = menu.show("CARS MENU", new String[]{"ADD",""},"Exit");
+            switch (selection){
+                case 0:
+                    exit = true;
+                case 1:
+                    break;
+            }
+        }while (!exit);
 
 
 
