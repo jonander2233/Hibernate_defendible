@@ -1,5 +1,6 @@
 package es.ada.u3.hibernate.dao;
 
+import es.ada.u3.hibernate.entities.Car;
 import es.ada.u3.hibernate.entities.Person;
 import es.ada.u3.hibernate.utils.HibernateSessionFactory;
 import jakarta.persistence.TypedQuery;
@@ -7,45 +8,50 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class PersonDao {
-    private static PersonDao instance = new PersonDao();
-    private PersonDao(){
+public class CarDao {
+    private static CarDao instance = new CarDao();
+    private CarDao(){
 
     }
-    public static PersonDao getInstance(){
+    public static CarDao getInstance(){
         return instance;
     }
-
-    public Person addPerson(Person person){
+    public Car addCar(Car car){
         Session session = HibernateSessionFactory.getSessionSingleton();
         Transaction tx = null;
         tx = session.beginTransaction();
-        session.persist(person);
+        session.persist(car);
         tx.commit();
-        return person;
+        return car;
     }
-    public List<Person> loadPersons()throws HibernateException {
+    public List<Car> loadCars() throws HibernateException {
         Session session = HibernateSessionFactory.getSessionSingleton();
         session.clear();
-        TypedQuery<Person> query = session.createNativeQuery("select * FROM person_ja24", Person.class);
+        TypedQuery<Car> query = session.createNativeQuery("SELECT * FROM car_ja24", Car.class);
         return query.getResultList();
     }
-    public Person getPersonById(String id)throws HibernateException {
-        Session session = HibernateSessionFactory.getSessionSingleton();
-        Person person = (Person) session.get(Person.class, id);
-        if(person != null)
-            session.refresh(person);
-        return person;
-    }
 
-    public void deletePerson(Person person)throws HibernateException{
+    public Car getCarById(String id)throws HibernateException {
+        Session session = HibernateSessionFactory.getSessionSingleton();
+        Car car =(Car) session.get(Car.class, id);
+        if (car != null)
+            session.refresh(car);
+        return car;
+    }
+    public void deleteCar(Car car)throws HibernateException{
         Session session = HibernateSessionFactory.getSessionSingleton();
         Transaction tx = null;
         tx = session.beginTransaction();
-        session.remove(person);
+
+        Car car1 = session.get(Car.class, car.getLicense_id());
+        if (car != null) {
+            car.getAccidents().clear();
+            session.delete(car);
+        }
+
         tx.commit();
+        session.close();
     }
 }

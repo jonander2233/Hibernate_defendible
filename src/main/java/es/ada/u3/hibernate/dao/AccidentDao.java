@@ -1,5 +1,6 @@
 package es.ada.u3.hibernate.dao;
 
+import es.ada.u3.hibernate.entities.Accident;
 import es.ada.u3.hibernate.entities.Person;
 import es.ada.u3.hibernate.utils.HibernateSessionFactory;
 import jakarta.persistence.TypedQuery;
@@ -7,45 +8,45 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class PersonDao {
-    private static PersonDao instance = new PersonDao();
-    private PersonDao(){
+public class AccidentDao {
+    private static AccidentDao instance = new AccidentDao();
+    private AccidentDao(){
 
     }
-    public static PersonDao getInstance(){
+    public static AccidentDao getInstance(){
         return instance;
     }
 
-    public Person addPerson(Person person){
+    public Accident addAccident(Accident accident){
         Session session = HibernateSessionFactory.getSessionSingleton();
         Transaction tx = null;
         tx = session.beginTransaction();
-        session.persist(person);
+        session.persist(accident);
         tx.commit();
-        return person;
+        return accident;
     }
-    public List<Person> loadPersons()throws HibernateException {
+    public List<Accident> loadAccidents()throws HibernateException {
         Session session = HibernateSessionFactory.getSessionSingleton();
         session.clear();
-        TypedQuery<Person> query = session.createNativeQuery("select * FROM person_ja24", Person.class);
+        TypedQuery<Accident> query = session.createNativeQuery("select * FROM accident_ja24", Accident.class);
         return query.getResultList();
     }
-    public Person getPersonById(String id)throws HibernateException {
+    public Accident getAccidentById(String id)throws HibernateException {
         Session session = HibernateSessionFactory.getSessionSingleton();
-        Person person = (Person) session.get(Person.class, id);
-        if(person != null)
-            session.refresh(person);
-        return person;
+        Accident accident = (Accident) session.get(Accident.class, id);
+        if(accident != null)
+            session.refresh(accident);
+        return accident;
     }
-
-    public void deletePerson(Person person)throws HibernateException{
+    public void deleteAccident(Accident accident)throws HibernateException{
         Session session = HibernateSessionFactory.getSessionSingleton();
         Transaction tx = null;
         tx = session.beginTransaction();
-        session.remove(person);
+
+        session.remove(accident);
         tx.commit();
     }
+
 }

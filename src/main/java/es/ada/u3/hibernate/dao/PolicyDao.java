@@ -1,51 +1,50 @@
 package es.ada.u3.hibernate.dao;
 
 import es.ada.u3.hibernate.entities.Person;
+import es.ada.u3.hibernate.entities.Policy;
 import es.ada.u3.hibernate.utils.HibernateSessionFactory;
 import jakarta.persistence.TypedQuery;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class PersonDao {
-    private static PersonDao instance = new PersonDao();
-    private PersonDao(){
-
+public class PolicyDao {
+    private static PolicyDao instance = new PolicyDao();
+    private PolicyDao(){
     }
-    public static PersonDao getInstance(){
+    public static PolicyDao getInstance(){
         return instance;
     }
 
-    public Person addPerson(Person person){
+    public Policy addPolicy(Policy policy){
         Session session = HibernateSessionFactory.getSessionSingleton();
         Transaction tx = null;
         tx = session.beginTransaction();
-        session.persist(person);
+        session.persist(policy);
         tx.commit();
-        return person;
+        return policy;
     }
-    public List<Person> loadPersons()throws HibernateException {
+    public List<Policy> loadPolicies()throws HibernateException {
         Session session = HibernateSessionFactory.getSessionSingleton();
+        TypedQuery<Policy> query = session.createNativeQuery("select * FROM policy_ja24", Policy.class);
         session.clear();
-        TypedQuery<Person> query = session.createNativeQuery("select * FROM person_ja24", Person.class);
         return query.getResultList();
     }
-    public Person getPersonById(String id)throws HibernateException {
+    public Policy getPolicyById(String id)throws HibernateException {
         Session session = HibernateSessionFactory.getSessionSingleton();
-        Person person = (Person) session.get(Person.class, id);
-        if(person != null)
-            session.refresh(person);
-        return person;
+        Policy policy =(Policy) session.get(Policy.class, id);
+        if(policy != null)
+            session.refresh(policy);
+        return policy;
     }
-
-    public void deletePerson(Person person)throws HibernateException{
+    public void deletePolicy(Policy policy)throws HibernateException{
         Session session = HibernateSessionFactory.getSessionSingleton();
         Transaction tx = null;
         tx = session.beginTransaction();
-        session.remove(person);
+        session.remove(policy);
         tx.commit();
     }
+
 }
