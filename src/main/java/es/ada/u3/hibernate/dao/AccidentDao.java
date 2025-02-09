@@ -44,9 +44,18 @@ public class AccidentDao {
         Session session = HibernateSessionFactory.getSessionSingleton();
         Transaction tx = null;
         tx = session.beginTransaction();
-
         session.remove(accident);
         tx.commit();
     }
-
+    public void updateAccident(Accident accident)throws HibernateException{
+        Session session = HibernateSessionFactory.getSessionSingleton();
+        Transaction tx;
+        tx = session.beginTransaction();
+        if(session.get(Accident.class, accident.getReport_number()) == null)
+            throw new HibernateException("No existe el accidente");
+        else{
+            session.merge(accident);
+        }
+        tx.commit();
+    }
 }

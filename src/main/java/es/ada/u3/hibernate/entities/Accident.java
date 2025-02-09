@@ -24,6 +24,8 @@ public class Accident {
     )
     private Set<Car> carsInvolved = new HashSet<>();
 
+    public Accident() {
+    }
     public Accident(String report_number, String location) {
         this.report_number = report_number;
         this.location = location;
@@ -58,9 +60,15 @@ public class Accident {
         StringBuilder a = new StringBuilder("Accident{" +
                 "report_number='" + report_number + '\'' +
                 ", location='" + location + '\'' +
-                ", carsInvolved=\n");
-        for (Car car : carsInvolved) {
-            a.append(car.getLicense_id()).append("\n");
+                ", carsInvolved:\n"
+        );
+
+        if(carsInvolved.isEmpty()){
+            a.append("No cars involved\n");
+        } else {
+            for (Car car : carsInvolved) {
+                a.append("Car id='" + car.getLicense_id() + "'\n");
+            }
         }
         a.append('}');
         return a.toString();

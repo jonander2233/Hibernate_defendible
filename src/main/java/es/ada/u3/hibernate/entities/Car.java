@@ -91,20 +91,28 @@ public class Car {
 
     @Override
     public String toString() {
-        if(policy == null){
-             return "Car{" +
+        StringBuilder sb = new StringBuilder();
+        sb.append("Car{" +
                 "license_id='" + license_id + '\'' +
                 ", model='" + model + '\'' +
                 ", year='" + year + '\'' +
-                ", police id='no policy'" + '\'' +
-                ", owner id='"+ owner.getDriver_id() + "'}";
+                ", owner id='"+ owner.getDriver_id()
+        );
+        if(policy != null){
+            sb.append(", policy id='" + policy.getPolicy_id() + "'");
+        }else {
+            sb.append(", policy id='this car have no policy'");
         }
-        return "Car{" +
-                "license_id='" + license_id + '\'' +
-                ", model='" + model + '\'' +
-                ", year='" + year + '\'' +
-                ", police id='" + policy.getPolicy_id() + '\'' +
-                ", owner id='"+ owner.getDriver_id() + "'}";
+        if(!accidents.isEmpty()) {
+            sb.append(", accidents=\n");
+            for (Accident accident : accidents) {
+                sb.append("Accident report number=" + accident.getReport_number()).append("\n");
+            }
+        }else {
+            sb.append(", accidents='none'");
+        }
+        sb.append('}');
+        return sb.toString();
     }
 
     @Override

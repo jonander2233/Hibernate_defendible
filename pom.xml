@@ -37,7 +37,7 @@
          <dependency>
             <groupId>com.github.jonander2233</groupId>
             <artifactId>myJavaLibrary</artifactId>
-            <version>1.1.5</version>
+            <version>e6c801678e</version>
         </dependency>
     </dependencies>
 
