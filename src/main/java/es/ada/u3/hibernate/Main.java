@@ -19,6 +19,7 @@ import org.jonander2233.lib_personal.Menu;
 import javax.swing.text.html.parser.Entity;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 public class Main {
     private static final int MIN_YEAR = 1700;
@@ -47,9 +48,70 @@ public class Main {
                     deleteObjects();
                     break;
                 case 4:
+                    filterObjects();
                     break;
             }
         }while (!exit);
+    }
+
+    private static void filterObjects() {
+        boolean back = false;
+        do {
+            int selection = menu.show("FILTER MENU", new String[]{"Filter Cars without Policy","Filter Crashed cars with location","Filter Drivers who has more cars","Filter"},"Back");
+            switch (selection){
+                case 0:
+                    back = true;
+                    break;
+                case 1:
+                    filterCarsWithoutPolicy();
+                    break;
+                case 2:
+                    filterCarsAccidetatedInLocation();
+                    break;
+                case 3:
+                    filterDriversWithMoreCars();
+                    break;
+                case 4:
+                    break;
+            }
+        }while (!back);
+    }
+
+    private static void filterDriversWithMoreCars() {
+        Person person = personDao.getDriverWithMostVehicles();
+        System.out.println("Driver with most cars:");
+        System.out.println(person);
+        waitKey();
+    }
+
+    private static void filterCarsAccidetatedInLocation() {
+        boolean back = false;
+        do {
+            String location = eys.imprimirYLeer("Insert location to filter or press enter to exit",0,STRING_MAX);
+            if (!location.isEmpty()){
+                List<Car> cars = carDao.getAccidentByLocation(location);
+                if(cars == null || cars.isEmpty()){
+                    System.out.println("No cars accidentated on the location " + location);
+                    waitKey();
+                } else {
+                    System.out.println("Cars accidetated in " + location + ":");
+                    for (Car car : cars) {
+                        System.out.println(car);
+                    }
+                    waitKey();
+                }
+            }else{
+                back = true;
+            }
+        }while (!back);
+    }
+
+    private static void filterCarsWithoutPolicy() {
+        System.out.println("Cars without policy:");
+        for (Car car : carDao.getCarsWhitoutPolicy()) {
+            System.out.println(car);
+        }
+        waitKey();
     }
 
     private static void deleteObjects() {

@@ -48,4 +48,19 @@ public class PersonDao {
         session.remove(person);
         tx.commit();
     }
+    public Person getDriverWithMostVehicles()throws HibernateException{
+        Session session = HibernateSessionFactory.getSessionSingleton();
+        session.clear();
+        String hql = """
+            SELECT p FROM Person p
+            LEFT JOIN p.cars c
+            GROUP BY p
+            ORDER BY COUNT(c) DESC
+        """;
+
+        Person person = session.createQuery(hql, Person.class)
+                       .setMaxResults(1)
+                       .getSingleResult();
+        return person;
+    }
 }

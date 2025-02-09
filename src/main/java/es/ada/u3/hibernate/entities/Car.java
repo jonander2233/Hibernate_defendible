@@ -103,6 +103,7 @@ public class Car {
         }else {
             sb.append(", policy id='this car have no policy'");
         }
+
         if(!accidents.isEmpty()) {
             sb.append(", accidents=\n");
             for (Accident accident : accidents) {

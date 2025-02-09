@@ -1,5 +1,6 @@
 package es.ada.u3.hibernate.dao;
 
+import es.ada.u3.hibernate.entities.Accident;
 import es.ada.u3.hibernate.entities.Car;
 import es.ada.u3.hibernate.entities.Person;
 import es.ada.u3.hibernate.utils.HibernateSessionFactory;
@@ -54,4 +55,24 @@ public class CarDao {
         tx.commit();
         session.close();
     }
+    public List<Car> getCarsWhitoutPolicy() throws HibernateException {
+        Session session = HibernateSessionFactory.getSessionSingleton();
+        session.clear();
+        String hql = "FROM Car c WHERE c.id NOT IN (SELECT p.car.license_id FROM Policy p)";
+        List<Car> cars = session.createQuery(hql, Car.class).getResultList();
+        return cars;
+    }
+    public List<Car> getAccidentByLocation(String location) {
+        Session session = HibernateSessionFactory.getSessionSingleton();
+        session.clear();
+        String hql = """
+            SELECT DISTINCT c FROM Car c
+            JOIN c.accidents a
+            WHERE a.location = :location
+        """;
+        return session.createQuery(hql, Car.class)
+                        .setParameter("location", location)
+                        .getResultList();
+    }
+
 }
