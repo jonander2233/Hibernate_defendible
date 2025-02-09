@@ -1,5 +1,6 @@
 package es.ada.u3.hibernate;
 
+import com.mysql.cj.util.StringUtils;
 import es.ada.u3.hibernate.dao.AccidentDao;
 import es.ada.u3.hibernate.dao.CarDao;
 import es.ada.u3.hibernate.dao.PersonDao;
@@ -85,6 +86,7 @@ public class Main {
                     System.out.println("The Accident with id " + accidentID + " doesn't exist");
                     waitKey();
                 } else {
+                    
                     boolean delete = eys.ImprimirYleerCharSN("Are you sure you want to delete the accident:" + accidentID + " " + accident.getLocation() + "?");
                     if(delete){
                         try {
@@ -142,15 +144,20 @@ public class Main {
                     System.out.println("The Car with id " + licenseID + " doesn't exist");
                     waitKey();
                 } else {
-                    boolean delete = eys.ImprimirYleerCharSN("Are you sure you want to delete the car:" + licenseID + " " + car.getModel() + "?");
-                    if(delete){
-                        try {
-                            carDao.deleteCar(car);
-                            System.out.println("Car deleted successfully");
-                            waitKey();
-                        }catch (IllegalStateException e){
-                            System.out.println("Error: The car has policies associated, please delete the policies first");
-                            waitKey();
+                    if (car.getPolicy() != null){
+                        System.out.println("The car has a policy associated, please delete the policy first");
+                        waitKey();
+                    } else {
+                        boolean delete = eys.ImprimirYleerCharSN("Are you sure you want to delete the car:" + licenseID + " " + car.getModel() + "?");
+                        if(delete){
+                            try {
+                                carDao.deleteCar(car);
+                                System.out.println("Car deleted successfully");
+                                waitKey();
+                            }catch (IllegalStateException e){
+                                System.out.println("Error");
+                                waitKey();
+                            }
                         }
                     }
                 }
@@ -255,7 +262,7 @@ public class Main {
     private static void add() {
         boolean back = false;
         do {
-            int selection = menu.show("ADD MENU", new String[]{"Add Driver","Add Car (Driver Needed)","Add Policy(Car Needed)","Add Accident (Car/s Needed)"},"Back");
+            int selection = menu.show("ADD MENU", new String[]{"Add Driver","Add Car (Driver Needed)","Add Policy(Car Needed)","Add Accident","Add Car/s to accident"},"Back");
             switch (selection){
                 case 0:
                     back = true;
@@ -272,6 +279,56 @@ public class Main {
                 case 4:
                     addAccident();
                     break;
+                case 5:
+                    addCarToAccident();
+                    break;
+            }
+        }while (!back);
+    }
+
+    private static void addCarToAccident() {
+        boolean back = false;
+        do {
+            String accidentID = eys.imprimirYLeer("Insert accident ID or press enter to exit",0,STRING_MAX);
+            if (!accidentID.isEmpty()){
+                Accident accident = accidentDao.getAccidentById(accidentID);
+                if(accident == null){
+                    System.out.println("The Accident with id " + accidentID + " doesn't exist");
+                    waitKey();
+                } else {
+                    String licenseID;
+                    boolean changes = false;
+                    do {
+                        licenseID = eys.imprimirYLeer("Insert Car license ID or press enter to finish",0,STRING_MAX);
+                        if(licenseID.isEmpty()){
+                            if (changes){
+                                accidentDao.updateAccident(accident);
+                                System.out.println("Accident updated successfully in database");
+                            }
+                            break;
+                        }
+                        Car car = carDao.getCarById(licenseID);
+                        if(car == null){
+                            System.out.println("The Car with id " + licenseID + " doesn't exist");
+                            waitKey();
+                        }else {
+                            if (accident.getCarsInvolved().contains(car)){
+                                System.out.println("The car is already in the accident");
+                                waitKey();
+                            } else {
+                                boolean insert = eys.ImprimirYleerCharSN("Are you sure you want to insert the car to the accident?:" + "Accident id=" + accidentID + ", Car licence id=" + licenseID + "?");
+                                if(insert){
+                                    accident.getCarsInvolved().add(car);
+                                    System.out.println("Car added to accident successfully");
+                                    changes = true;
+                                }
+                            }
+                        }
+                    }while (true);
+
+                }
+            }else{
+                back = true;
             }
         }while (!back);
     }

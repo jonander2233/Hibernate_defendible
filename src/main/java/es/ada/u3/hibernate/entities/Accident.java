@@ -24,6 +24,8 @@ public class Accident {
     )
     private Set<Car> carsInvolved = new HashSet<>();
 
+    public Accident() {
+    }
     public Accident(String report_number, String location) {
         this.report_number = report_number;
         this.location = location;
