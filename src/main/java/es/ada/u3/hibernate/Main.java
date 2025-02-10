@@ -31,6 +31,7 @@ public class Main {
     private static PolicyDao policyDao = PolicyDao.getInstance();
     private static AccidentDao accidentDao = AccidentDao.getInstance();
     public static void main(String[] args) {
+        init();
         boolean exit = false;
         do {
             int selection = menu.show("CARS MENU", new String[]{"ADD","LIST","DELETE","FILTER"},"Exit");
@@ -53,11 +54,34 @@ public class Main {
             }
         }while (!exit);
     }
+    private static void init(){
+        Person personA = new Person("personA","c/Pez 1ºA","Sergio Alejo");
+        Person personB = new Person("personB","c/Pez 1ºB","Elia Bastian");
+        Person personC = new Person("personC","c/Pez 1ºC","Juan Clade");
+        personDao.addPerson(personA);
+        personDao.addPerson(personB);
+        personDao.addPerson(personC);
+        carDao.addCar(new Car("carA","Ford Focus",2011,personA));
+        carDao.addCar(new Car("carB","Seat Ibiza",2012,personA));
+        carDao.addCar(new Car("carC","Renault Laguna",2013,personB));
+        carDao.addCar(new Car("carD","Fiat Tipo",2014,personC));
+        policyDao.addPolicy(new Policy("polA",carDao.getCarById("carA")));
+        policyDao.addPolicy(new Policy("polB",carDao.getCarById("carB")));
+        accidentDao.addAccident(new Accident("accA","Madrid"));
+        accidentDao.addAccident(new Accident("accB","Teruel"));
+        accidentDao.addAccident(new Accident("accC","Lugo"));
 
+        accidentDao.getAccidentById("accA").getCarsInvolved().add(carDao.getCarById("carA"));
+        accidentDao.getAccidentById("accA").getCarsInvolved().add(carDao.getCarById("carB"));
+        accidentDao.getAccidentById("accB").getCarsInvolved().add(carDao.getCarById("carC"));
+        accidentDao.getAccidentById("accB").getCarsInvolved().add(carDao.getCarById("carD"));
+        accidentDao.getAccidentById("accC").getCarsInvolved().add(carDao.getCarById("carA"));
+        accidentDao.getAccidentById("accC").getCarsInvolved().add(carDao.getCarById("carD"));
+    }
     private static void filterObjects() {
         boolean back = false;
         do {
-            int selection = menu.show("FILTER MENU", new String[]{"Filter Cars without Policy","Filter Crashed cars with location","Filter Drivers who has more cars","Filter"},"Back");
+            int selection = menu.show("FILTER MENU", new String[]{"Filter Cars without Policy","Filter Crashed cars with location","Filter Drivers who has more cars","Filter {that thing}"},"Back");
             switch (selection){
                 case 0:
                     back = true;
@@ -72,6 +96,7 @@ public class Main {
                     filterDriversWithMoreCars();
                     break;
                 case 4:
+                    System.out.println("Not implemented yet");
                     break;
             }
         }while (!back);
@@ -152,7 +177,7 @@ public class Main {
                     boolean delete = eys.ImprimirYleerCharSN("Are you sure you want to delete the accident:" + accidentID + " " + accident.getLocation() + "?");
                     if(delete){
                         try {
-                            accidentDao.deleteAccident(accident);
+                            accidentDao.deleteAccidentManual(accident);
                             System.out.println("Accident deleted successfully");
                             waitKey();
                         }catch (IllegalStateException e){

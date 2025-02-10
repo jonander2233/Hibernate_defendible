@@ -47,6 +47,17 @@ public class AccidentDao {
         session.remove(accident);
         tx.commit();
     }
+    public void deleteAccidentManual(Accident accident)throws HibernateException{
+        Session session = HibernateSessionFactory.getSessionSingleton();
+        String hqlDeleteParticipated = "DELETE FROM Participated p WHERE p.accident.reportNumber = :reportNumber";
+        Transaction tx;
+        tx = session.beginTransaction();
+        session.createNativeQuery("DELETE FROM participated_ja24 WHERE report_number = :reportNumber")
+                .setParameter("reportNumber", accident.getReport_number())
+                .executeUpdate();
+        session.remove(accident);
+        tx.commit();
+    }
     public void updateAccident(Accident accident)throws HibernateException{
         Session session = HibernateSessionFactory.getSessionSingleton();
         Transaction tx;

@@ -1,5 +1,7 @@
 package es.ada.u3.hibernate.dao;
 
+import es.ada.u3.hibernate.entities.Accident;
+import es.ada.u3.hibernate.entities.Car;
 import es.ada.u3.hibernate.entities.Person;
 import es.ada.u3.hibernate.utils.HibernateSessionFactory;
 import jakarta.persistence.TypedQuery;
@@ -45,6 +47,13 @@ public class PersonDao {
         Session session = HibernateSessionFactory.getSessionSingleton();
         Transaction tx = null;
         tx = session.beginTransaction();
+        AccidentDao accidentDao = AccidentDao.getInstance();
+        List<Car> cars = new ArrayList<>(person.getCars());
+        for (Car car : cars) {
+            for (Accident accident : car.getAccidents()) {
+                accidentDao.deleteAccidentManual(accident);
+            }
+        }
         session.remove(person);
         tx.commit();
     }
